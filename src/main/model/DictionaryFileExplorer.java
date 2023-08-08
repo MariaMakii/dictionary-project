@@ -15,7 +15,7 @@ public class DictionaryFileExplorer {
         this.paths = paths;
     }
 
-    @Resource(name = "filePaths")
+    @Resource(name = "paths")
     private Map<main.enums.DictionaryType, String> paths;
 
     public void setPaths(Map<main.enums.DictionaryType, String> paths) {

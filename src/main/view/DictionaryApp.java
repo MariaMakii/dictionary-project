@@ -5,6 +5,7 @@ import main.enums.DictionaryType;
 import main.model.DictionaryFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-@Component("app")
+@Component
 public class DictionaryApp implements IDictionaryApp {
     @Autowired
     @Qualifier("controller")
