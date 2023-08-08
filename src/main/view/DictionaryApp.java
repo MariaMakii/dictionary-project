@@ -1,8 +1,11 @@
-package view;
+package main.view;
 
-import controller.DictionaryAppController;
-import enums.DictionaryType;
-import model.DictionaryFile;
+import main.controller.DictionaryAppController;
+import main.enums.DictionaryType;
+import main.model.DictionaryFile;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,22 +13,37 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+@Component("app")
 public class DictionaryApp implements IDictionaryApp {
+    @Autowired
+    @Qualifier("controller")
     DictionaryAppController controller;
-    ArrayList<DictionaryFile> loadedDictionaries;
+
+    @Autowired
+    List<DictionaryFile> loadedDictionaries;
+
+    public DictionaryApp() {
+    }
 
     @Override
     public void setController(DictionaryAppController controller) {
         this.controller = controller;
     }
 
-    public DictionaryApp(DictionaryAppController controller, ArrayList<DictionaryFile> loadedDictionaries) {
+    public void setLoadedDictionaries(ArrayList<DictionaryFile> loadedDictionaries) {
         this.loadedDictionaries = loadedDictionaries;
-        setController(controller);
     }
 
     Scanner sc = new Scanner(System.in);
     List<Integer> commands = Arrays.asList(0, 1, 2, 3, 4, 5);
+
+    private void initApp() {
+
+    }
+
+    private void closeApp() {
+        sc.close();
+    }
 
     private boolean isNumber(String str) {
         try {

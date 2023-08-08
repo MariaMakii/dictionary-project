@@ -1,7 +1,7 @@
-package view;
+package main.view;
 
-import controller.DictionaryAppController;
-import enums.DictionaryType;
+import main.controller.DictionaryAppController;
+import main.enums.DictionaryType;
 
 public interface IDictionaryApp {
     void setController(DictionaryAppController controller);

@@ -1,17 +1,26 @@
-package controller;
+package main.controller;
 
-import enums.DictionaryType;
-import model.IDictionaryManager;
+import main.enums.DictionaryType;
+import main.model.IDictionaryManager;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
+@Component("controller")
 public class DictionaryAppController implements IDictionaryAppController {
     public IDictionaryManager dictionaryManager;
+
+    public void showValidator() {
+        dictionaryManager.getValidator().showValidator();
+    }
 
     @Override
     public void setDictionaryManager(IDictionaryManager manager) {
         this.dictionaryManager = manager;
     }
 
-    public DictionaryAppController(IDictionaryManager dictionaryManager) {
+    @Autowired
+    public DictionaryAppController(@Qualifier("fileManager") IDictionaryManager dictionaryManager) {
         setDictionaryManager(dictionaryManager);
     }
 

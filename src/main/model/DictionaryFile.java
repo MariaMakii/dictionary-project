@@ -1,6 +1,6 @@
-package model;
+package main.model;
 
-import enums.DictionaryType;
+import main.enums.DictionaryType;
 
 public class DictionaryFile {
     private DictionaryType type;
@@ -17,5 +17,8 @@ public class DictionaryFile {
     public DictionaryFile(DictionaryType type, String dictionaryPath) {
         this.type = type;
         this.dictionaryPath = dictionaryPath;
+    }
+
+    public DictionaryFile() {
     }
 }

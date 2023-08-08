@@ -1,27 +1,31 @@
-package model;
+package main.model;
 
-import enums.DictionaryType;
+import main.enums.DictionaryType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
+@Component("fileManager")
 public class DictionaryFileManager implements IDictionaryManager {
 
     private DictionaryType dictionaryType = null;
-    private final String separator;
-    private final DictionaryFileExplorer explorer;
+    private String separator;
+
     private DictionaryValidator validator;
 
-    public DictionaryFileManager(DictionaryFileExplorer explorer, DictionaryValidator validator) {
+    private DictionaryFileExplorer explorer;
+
+    @Autowired
+    public DictionaryFileManager(DictionaryValidator validator, DictionaryFileExplorer explorer) {
         setValidator(validator);
         this.explorer = explorer;
         this.separator = "--";
     }
 
-    public DictionaryFileManager(DictionaryFileExplorer explorer, DictionaryValidator validator, String separator) {
-        setValidator(validator);
-        this.explorer = explorer;
+    public void setSeparator(String separator) {
         this.separator = separator;
     }
 

@@ -1,6 +1,6 @@
-package model;
+package main.model;
 
-import enums.DictionaryType;
+import main.enums.DictionaryType;
 
 public interface IDictionaryValidator {
     boolean validateWord(DictionaryType type, String word);

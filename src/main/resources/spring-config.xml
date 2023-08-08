@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-2.5.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+>
+
+    <bean class="java.lang.String" id="firstPath">
+        <constructor-arg index="0" value="C:/untitled/files/dictionary1.txt"/>
+    </bean>
+
+    <bean class="java.lang.String" id="secondPath">
+        <constructor-arg index="0" value="C:/untitled/files/dictionary2.txt"/>
+    </bean>
+
+    <bean class="java.util.regex.Pattern" factory-method="compile" id="firstPattern">
+        <constructor-arg index="0" value="[a-zA-Z]{4}"/>
+    </bean>
+
+    <bean class="java.util.regex.Pattern" factory-method="compile" id="secondPattern">
+        <constructor-arg index="0" value="\d{5}"/>
+    </bean>
+
+    <util:map id="filePaths" key-type="main.enums.DictionaryType" map-class="java.util.HashMap">
+        <entry value-ref="firstPath">
+            <key>
+                <value type="main.enums.DictionaryType">FIRST</value>
+            </key>
+        </entry>
+        <entry value-ref="secondPath">
+            <key>
+                <value type="main.enums.DictionaryType">SECOND</value>
+            </key>
+        </entry>
+    </util:map>
+
+    <util:map id="validatorPatterns" key-type="main.enums.DictionaryType">
+        <entry value-ref="firstPattern">
+            <key>
+                <value type="main.enums.DictionaryType">FIRST</value>
+            </key>
+        </entry>
+        <entry value-ref="secondPattern">
+            <key>
+                <value type="main.enums.DictionaryType">SECOND</value>
+            </key>
+        </entry>
+    </util:map>
+
+    <bean id="dictionary1" class="main.model.DictionaryFile">
+        <constructor-arg index="0" type="main.enums.DictionaryType" value="FIRST"/>
+        <constructor-arg index="1" ref="firstPath"/>
+    </bean>
+
+    <bean id="dictionary2" class="main.model.DictionaryFile">
+        <constructor-arg index="0" type="main.enums.DictionaryType" value="SECOND"/>
+        <constructor-arg index="1" ref="secondPath"/>
+    </bean>
+
+    <context:component-scan base-package="main"/>
+</beans>

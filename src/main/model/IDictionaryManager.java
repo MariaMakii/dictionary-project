@@ -1,6 +1,6 @@
-package model;
+package main.model;
 
-import enums.DictionaryType;
+import main.enums.DictionaryType;
 
 public interface IDictionaryManager extends IDictionary {
     String dictionaryToString();

@@ -1,6 +1,6 @@
-package controller;
+package main.controller;
 
-import model.IDictionaryManager;
+import main.model.IDictionaryManager;
 
 public interface IDictionaryAppController {
     void setDictionaryManager(IDictionaryManager manager);
