@@ -58,4 +58,14 @@ public class SpringConfig {
     public DictionaryFile dictionary2() {
         return new DictionaryFile(DictionaryType.SECOND, secondPath);
     }
+
+//    @Bean
+//    public DictionaryFile dictionary1() {
+//        return new DictionaryFile(DictionaryType.FIRST, "\"Цифровой словарь\"");
+//    }
+//
+//    @Bean
+//    public DictionaryFile dictionary2() {
+//        return new DictionaryFile(DictionaryType.SECOND, "\"Латинский словарь\"");
+//    }
 }

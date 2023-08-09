@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PreDestroy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,10 +39,8 @@ public class DictionaryApp implements IDictionaryApp {
     Scanner sc = new Scanner(System.in);
     List<Integer> commands = Arrays.asList(0, 1, 2, 3, 4, 5);
 
-    private void initApp() {
 
-    }
-
+    @PreDestroy
     private void closeApp() {
         sc.close();
     }
@@ -171,7 +170,7 @@ public class DictionaryApp implements IDictionaryApp {
         }
         Pattern dictionaryCommand = Pattern.compile("D\\d{1}");
         String command = sc.next();
-        if (!checkCommand(command)) {
+        if (!checkCommand(command) && !command.equals("esc")) {
 
             int dictionaryNumber = stringToInteger(String.valueOf(command.charAt(1)));
             if (dictionaryCommand.matcher(command).matches()
