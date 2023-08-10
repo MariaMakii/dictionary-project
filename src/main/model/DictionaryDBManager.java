@@ -15,14 +15,8 @@ import java.util.stream.Collectors;
 @Component("DBManager")
 public class DictionaryDBManager implements IDictionaryManager {
 
-    private DefinitionDAO dao = new DefinitionDAO();
-
-    public void setDictionaryId(Integer dictionaryId) {
-        this.dictionaryId = dictionaryId;
-    }
-
-    private Integer dictionaryId;
-    private DictionaryType dictionaryType;
+    private final DefinitionDAO dao = new DefinitionDAO();
+    private DictionaryShell dictionary;
     private DictionaryValidator validator;
 
     @Autowired
@@ -32,7 +26,7 @@ public class DictionaryDBManager implements IDictionaryManager {
 
     @Override
     public Map<String, String> getDictionary() {
-        List<Definition> definitions = dao.getAll(dictionaryType);
+        List<Definition> definitions = dao.getAll(dictionary.getType());
         Map<String, String> result = new HashMap<>();
         definitions.forEach(definition -> {
             result.put(definition.getWord(), definition.getDefinition());
@@ -42,16 +36,14 @@ public class DictionaryDBManager implements IDictionaryManager {
 
     @Override
     public void deleteWord(String word) {
-        List<Definition> definitions = dao.getAll(dictionaryType);
+        List<Definition> definitions = dao.getAll(dictionary.getType());
         List<Definition> definitionsForDelete = definitions.stream().filter(definition -> definition.getWord().equals(word)).collect(Collectors.toList());
-        definitionsForDelete.forEach(definition -> {
-            dao.delete(definition);
-        });
+        definitionsForDelete.forEach(dao::delete);
     }
 
     @Override
     public String getDefinition(String word) {
-        List<Definition> definitions = dao.getAll(dictionaryType);
+        List<Definition> definitions = dao.getAll(dictionary.getType());
         List<Definition> foundedDefinitions = definitions.stream().filter(definition ->
                 definition.getWord().equals(word)
         ).collect(Collectors.toList());
@@ -66,15 +58,15 @@ public class DictionaryDBManager implements IDictionaryManager {
 
     @Override
     public void addWord(String word, String definition) {
-        if (validator.validateWord(dictionaryType, word)) {
-            Definition def = new Definition(word, definition, dictionaryId);
+        if (validator.validateWord(dictionary.getType(), word)) {
+            Definition def = new Definition(word, definition, dictionary.getId());
             dao.save(def);
         }
     }
 
     @Override
     public String dictionaryToString() {
-        List<Definition> definitions = dao.getAll(dictionaryType);
+        List<Definition> definitions = dao.getAll(dictionary.getType());
         StringJoiner joiner = new StringJoiner("\n");
         definitions.forEach(definition -> {
             joiner.add(definition.getWord() + " - " + definition.getDefinition());
@@ -84,22 +76,22 @@ public class DictionaryDBManager implements IDictionaryManager {
     }
 
     @Override
-    public void setDictionaryType(DictionaryType type) {
-        dictionaryType = type;
-    }
-
-    @Override
     public void setValidator(DictionaryValidator validator) {
         this.validator = validator;
     }
 
     @Override
     public DictionaryType getDictionaryType() {
-        return dictionaryType;
+        return dictionary.getType();
     }
 
     @Override
     public DictionaryValidator getValidator() {
         return this.validator;
+    }
+
+    @Override
+    public void setDictionary(DictionaryShell dictionary) {
+        this.dictionary = dictionary;
     }
 }

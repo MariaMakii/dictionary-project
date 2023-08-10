@@ -2,7 +2,6 @@ package main.view;
 
 import main.HibernateSessionFactory;
 import main.controller.DictionaryAppController;
-import main.enums.DictionaryType;
 import main.model.DictionaryShell;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -122,8 +121,8 @@ public class DictionaryApp implements IDictionaryApp {
         }
     }
 
-    public void printDictionary(DictionaryType type) {
-        System.out.println("ТЕКУЩИЙ СЛОВАРЬ №" + (type == DictionaryType.LATIN ? "1" : "2"));
+    public void printDictionary(String dictionaryName) {
+        System.out.println("ТЕКУЩИЙ СЛОВАРЬ №" + dictionaryName);
         String result = controller.getDictionary();
         System.out.println(result);
     }
@@ -178,9 +177,9 @@ public class DictionaryApp implements IDictionaryApp {
                             dictionaryNumber <= availableDictionaries.size()
             )
             ) {
-                DictionaryType type = availableDictionaries.get(dictionaryNumber - 1).getType();
-                controller.setDictionaryType(type);
-                printDictionary(type);
+                DictionaryShell selectedDictionary =availableDictionaries.get(dictionaryNumber-1);
+                controller.setDictionary(selectedDictionary);
+                printDictionary(selectedDictionary.getName());
             }
         }
     }

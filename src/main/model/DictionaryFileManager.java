@@ -11,26 +11,19 @@ import java.util.Map;
 @Component("fileManager")
 public class DictionaryFileManager implements IDictionaryManager {
 
-    private DictionaryType dictionaryType = null;
+    private DictionaryShell dictionary;
     private String separator;
 
     private DictionaryValidator validator;
 
-    private DictionaryFileExplorer explorer;
-
     @Autowired
-    public DictionaryFileManager(DictionaryValidator validator, DictionaryFileExplorer explorer) {
+    public DictionaryFileManager(DictionaryValidator validator) {
         setValidator(validator);
-        this.explorer = explorer;
         this.separator = "--";
     }
 
     public void setSeparator(String separator) {
         this.separator = separator;
-    }
-
-    public void setDictionaryType(DictionaryType type) {
-        this.dictionaryType = type;
     }
 
     @Override
@@ -39,11 +32,17 @@ public class DictionaryFileManager implements IDictionaryManager {
     }
 
     public DictionaryType getDictionaryType() {
-        return this.dictionaryType;
+
+        return dictionary.getType();
     }
 
     public DictionaryValidator getValidator() {
         return this.validator;
+    }
+
+    @Override
+    public void setDictionary(DictionaryShell dictionary) {
+        this.dictionary = dictionary;
     }
 
 
@@ -51,7 +50,7 @@ public class DictionaryFileManager implements IDictionaryManager {
     public Map<String, String> getDictionary() {
         try {
             Map<String, String> dictionary = new HashMap<>();
-            BufferedReader reader = new BufferedReader(new FileReader(explorer.getDictionaryPath(dictionaryType)));
+            BufferedReader reader = new BufferedReader(new FileReader(this.dictionary.getPath()));
             String nextLine;
             String word, definition;
             while ((nextLine = reader.readLine()) != null) {
@@ -77,7 +76,7 @@ public class DictionaryFileManager implements IDictionaryManager {
         try {
             Map<String, String> dictionary = getDictionary();
             PrintWriter pw;
-            pw = new PrintWriter(new FileWriter(explorer.getDictionaryPath(dictionaryType), false));
+            pw = new PrintWriter(new FileWriter(this.dictionary.getPath(), false));
             pw.print("");
             pw.close();
             dictionary.forEach((key, value) -> {
@@ -103,7 +102,7 @@ public class DictionaryFileManager implements IDictionaryManager {
     @Override
     public void addWord(String word, String definition) {
         try {
-            PrintWriter pw = new PrintWriter(new FileWriter(explorer.getDictionaryPath(dictionaryType), true));
+            PrintWriter pw = new PrintWriter(new FileWriter(this.dictionary.getPath(), true));
             pw.println(word + " -- " + definition);
             pw.close();
         } catch (IOException e) {

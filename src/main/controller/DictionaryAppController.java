@@ -1,6 +1,7 @@
 package main.controller;
 
 import main.enums.DictionaryType;
+import main.model.DictionaryShell;
 import main.model.IDictionaryManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,11 +21,9 @@ public class DictionaryAppController implements IDictionaryAppController {
         setDictionaryManager(dictionaryManager);
     }
 
-    public void setDictionaryType(DictionaryType dictionaryType) {
-        this.dictionaryManager.setDictionaryType(dictionaryType);
+    public void setDictionary(DictionaryShell dictionary){
+        this.dictionaryManager.setDictionary(dictionary);
     }
-
-
 
     public String getDefinition(String word) {
         return dictionaryManager.getDefinition(word);
