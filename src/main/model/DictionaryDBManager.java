@@ -16,7 +16,13 @@ import java.util.stream.Collectors;
 public class DictionaryDBManager implements IDictionaryManager {
 
     private DefinitionDAO dao = new DefinitionDAO();
-    private DictionaryType dictionaryType = null;
+
+    public void setDictionaryId(Integer dictionaryId) {
+        this.dictionaryId = dictionaryId;
+    }
+
+    private Integer dictionaryId;
+    private DictionaryType dictionaryType;
     private DictionaryValidator validator;
 
     @Autowired
@@ -26,8 +32,7 @@ public class DictionaryDBManager implements IDictionaryManager {
 
     @Override
     public Map<String, String> getDictionary() {
-        int dictionaryTypeInt = dictionaryType.equals(DictionaryType.FIRST) ? 0 : 1;
-        List<Definition> definitions = dao.getAll(dictionaryTypeInt);
+        List<Definition> definitions = dao.getAll(dictionaryType);
         Map<String, String> result = new HashMap<>();
         definitions.forEach(definition -> {
             result.put(definition.getWord(), definition.getDefinition());
@@ -35,13 +40,9 @@ public class DictionaryDBManager implements IDictionaryManager {
         return result;
     }
 
-    private int getDictionaryDBType() {
-        return dictionaryType.equals(DictionaryType.FIRST) ? 0 : 1;
-    }
-
     @Override
     public void deleteWord(String word) {
-        List<Definition> definitions = dao.getAll(getDictionaryDBType());
+        List<Definition> definitions = dao.getAll(dictionaryType);
         List<Definition> definitionsForDelete = definitions.stream().filter(definition -> definition.getWord().equals(word)).collect(Collectors.toList());
         definitionsForDelete.forEach(definition -> {
             dao.delete(definition);
@@ -50,7 +51,7 @@ public class DictionaryDBManager implements IDictionaryManager {
 
     @Override
     public String getDefinition(String word) {
-        List<Definition> definitions = dao.getAll(getDictionaryDBType());
+        List<Definition> definitions = dao.getAll(dictionaryType);
         List<Definition> foundedDefinitions = definitions.stream().filter(definition ->
                 definition.getWord().equals(word)
         ).collect(Collectors.toList());
@@ -66,14 +67,14 @@ public class DictionaryDBManager implements IDictionaryManager {
     @Override
     public void addWord(String word, String definition) {
         if (validator.validateWord(dictionaryType, word)) {
-            Definition def = new Definition(word, definition, getDictionaryDBType());
+            Definition def = new Definition(word, definition, dictionaryId);
             dao.save(def);
         }
     }
 
     @Override
     public String dictionaryToString() {
-        List<Definition> definitions = dao.getAll(getDictionaryDBType());
+        List<Definition> definitions = dao.getAll(dictionaryType);
         StringJoiner joiner = new StringJoiner("\n");
         definitions.forEach(definition -> {
             joiner.add(definition.getWord() + " - " + definition.getDefinition());

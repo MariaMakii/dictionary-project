@@ -10,12 +10,13 @@ public class Definition {
     private Integer id;
     private String word;
     private String definition;
-    private int dictionary;
+    @Column(name = "dictionary")
+    private int dictionaryId;
 
     public Definition(String word, String definition, int dictionary) {
         this.word = word;
         this.definition = definition;
-        this.dictionary = dictionary;
+        this.dictionaryId = dictionary;
     }
 
     public Definition() {
@@ -26,8 +27,8 @@ public class Definition {
         return id;
     }
 
-    public Integer getDictionary() {
-        return dictionary;
+    public Integer getDictionaryId() {
+        return dictionaryId;
     }
 
     public String getWord() {

@@ -10,23 +10,21 @@ import org.springframework.stereotype.Component;
 public class DictionaryAppController implements IDictionaryAppController {
     public IDictionaryManager dictionaryManager;
 
-    public void showValidator() {
-        dictionaryManager.getValidator().showValidator();
-    }
-
     @Override
     public void setDictionaryManager(IDictionaryManager manager) {
         this.dictionaryManager = manager;
     }
 
     @Autowired
-    public DictionaryAppController(@Qualifier("fileManager") IDictionaryManager dictionaryManager) {
+    public DictionaryAppController(@Qualifier("DBManager") IDictionaryManager dictionaryManager) {
         setDictionaryManager(dictionaryManager);
     }
 
     public void setDictionaryType(DictionaryType dictionaryType) {
         this.dictionaryManager.setDictionaryType(dictionaryType);
     }
+
+
 
     public String getDefinition(String word) {
         return dictionaryManager.getDefinition(word);

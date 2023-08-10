@@ -1,11 +1,11 @@
 package main.view;
 
+import main.HibernateSessionFactory;
 import main.controller.DictionaryAppController;
 import main.enums.DictionaryType;
-import main.model.DictionaryFile;
+import main.model.DictionaryShell;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
@@ -22,7 +22,9 @@ public class DictionaryApp implements IDictionaryApp {
     DictionaryAppController controller;
 
     @Autowired
-    List<DictionaryFile> loadedDictionaries;
+    @Qualifier("availableDictionaries")
+    ArrayList<DictionaryShell> availableDictionaries;
+
 
     public DictionaryApp() {
     }
@@ -32,10 +34,6 @@ public class DictionaryApp implements IDictionaryApp {
         this.controller = controller;
     }
 
-    public void setLoadedDictionaries(ArrayList<DictionaryFile> loadedDictionaries) {
-        this.loadedDictionaries = loadedDictionaries;
-    }
-
     Scanner sc = new Scanner(System.in);
     List<Integer> commands = Arrays.asList(0, 1, 2, 3, 4, 5);
 
@@ -43,6 +41,7 @@ public class DictionaryApp implements IDictionaryApp {
     @PreDestroy
     private void closeApp() {
         sc.close();
+        HibernateSessionFactory.shutdown();
     }
 
     private boolean isNumber(String str) {
@@ -124,7 +123,7 @@ public class DictionaryApp implements IDictionaryApp {
     }
 
     public void printDictionary(DictionaryType type) {
-        System.out.println("ТЕКУЩИЙ СЛОВАРЬ №" + (type == DictionaryType.FIRST ? "1" : "2"));
+        System.out.println("ТЕКУЩИЙ СЛОВАРЬ №" + (type == DictionaryType.LATIN ? "1" : "2"));
         String result = controller.getDictionary();
         System.out.println(result);
     }
@@ -165,8 +164,8 @@ public class DictionaryApp implements IDictionaryApp {
     }
 
     private void selectDictionary() {
-        for (int i = 0; i < loadedDictionaries.size(); i++) {
-            System.out.println("Для выбора словаря " + loadedDictionaries.get(i).getDictionaryPath() + " введите D" + (i + 1));
+        for (int i = 0; i < availableDictionaries.size(); i++) {
+            System.out.println("Для выбора словаря " + availableDictionaries.get(i).getName() + " введите D" + (i + 1));
         }
         Pattern dictionaryCommand = Pattern.compile("D\\d{1}");
         String command = sc.next();
@@ -176,10 +175,10 @@ public class DictionaryApp implements IDictionaryApp {
             if (dictionaryCommand.matcher(command).matches()
                     && (
                     dictionaryNumber > 0 &&
-                            dictionaryNumber <= loadedDictionaries.size()
+                            dictionaryNumber <= availableDictionaries.size()
             )
             ) {
-                DictionaryType type = loadedDictionaries.get(dictionaryNumber - 1).getType();
+                DictionaryType type = availableDictionaries.get(dictionaryNumber - 1).getType();
                 controller.setDictionaryType(type);
                 printDictionary(type);
             }
