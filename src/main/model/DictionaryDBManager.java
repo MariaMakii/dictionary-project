@@ -4,6 +4,7 @@ import main.entities.Definition;
 import main.entities.DefinitionDAO;
 import main.enums.DictionaryType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 @Component("DBManager")
+@Profile("DB")
 public class DictionaryDBManager implements IDictionaryManager {
 
     private final DefinitionDAO dao = new DefinitionDAO();

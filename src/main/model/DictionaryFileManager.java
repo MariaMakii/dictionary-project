@@ -2,6 +2,7 @@ package main.model;
 
 import main.enums.DictionaryType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -9,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component("fileManager")
+@Profile("file")
 public class DictionaryFileManager implements IDictionaryManager {
 
     private DictionaryShell dictionary;

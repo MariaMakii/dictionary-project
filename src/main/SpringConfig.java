@@ -6,31 +6,39 @@ import main.entities.DictionaryValidator;
 import main.enums.DictionaryType;
 import main.model.DictionaryShell;
 import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.env.Environment;
 
 import javax.persistence.Query;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Configuration
 @ComponentScan("main")
 @PropertySource("classpath:app.properties")
-public class SpringConfig {
-    @Value("${dictionaryAccess}")
+public class SpringConfig{
+    @Value("${spring.profiles.active}")
     private String managerType;
 
     @Value("${dictionaryFolderPath}")
     private String mainFolderPath;
+
+    @Autowired
+    public Environment env;
+
+    @Bean
+    public String getEnv(){
+        return Arrays.toString(env.getActiveProfiles());
+    }
+
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {

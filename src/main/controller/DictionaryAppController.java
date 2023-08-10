@@ -3,6 +3,7 @@ package main.controller;
 import main.model.DictionaryShell;
 import main.model.IDictionaryManager;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +17,7 @@ public class DictionaryAppController implements IDictionaryAppController {
     }
 
     @Autowired
-    public DictionaryAppController(@Qualifier("fileManager") IDictionaryManager dictionaryManager) {
+    public DictionaryAppController( IDictionaryManager dictionaryManager) {
         setDictionaryManager(dictionaryManager);
     }
 

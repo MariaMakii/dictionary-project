@@ -9,7 +9,6 @@
         <maven.compiler.target>48</maven.compiler.target>
     </properties>
 
-
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>
