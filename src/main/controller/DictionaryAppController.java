@@ -1,6 +1,5 @@
 package main.controller;
 
-import main.enums.DictionaryType;
 import main.model.DictionaryShell;
 import main.model.IDictionaryManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,7 @@ public class DictionaryAppController implements IDictionaryAppController {
     }
 
     @Autowired
-    public DictionaryAppController(@Qualifier("DBManager") IDictionaryManager dictionaryManager) {
+    public DictionaryAppController(@Qualifier("fileManager") IDictionaryManager dictionaryManager) {
         setDictionaryManager(dictionaryManager);
     }
 

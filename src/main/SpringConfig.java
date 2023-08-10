@@ -14,6 +14,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 import javax.persistence.Query;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,8 +29,8 @@ public class SpringConfig {
     @Value("${dictionaryAccess}")
     private String managerType;
 
-    public SpringConfig() {
-    }
+    @Value("${dictionaryFolderPath}")
+    private String mainFolderPath;
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
@@ -40,20 +41,28 @@ public class SpringConfig {
     Pattern numbersPattern = Pattern.compile("\\d{5}");
 
 
-    @Value("${firstPath}")
-    String firstPath;
-
-    @Value("${secondPath}")
-    String secondPath;
-
-    public Map<DictionaryType, String> paths = new HashMap<>();
     public Map<DictionaryType, Pattern> validatorPatterns = new HashMap<>();
 
     @Bean
     public Map<DictionaryType, String> paths() {
-        paths.put(DictionaryType.LATIN, firstPath);
-        paths.put(DictionaryType.NUMBERS, secondPath);
-        return this.paths;
+        Map<DictionaryType, String> paths = new HashMap<>();
+        File mainFolder = new File(mainFolderPath);
+        File[] subfolders = mainFolder.listFiles(File::isDirectory);
+        int dictionaryFileId = 0;
+        assert subfolders != null;
+        for (File folder : subfolders) {
+            File[] dictionaryFiles = folder.listFiles(File::isFile);
+            assert dictionaryFiles != null;
+            for (File dictionaryFile : dictionaryFiles) {
+                DictionaryShell dictionary = new DictionaryShell();
+                dictionary.setName(dictionaryFile.getName());
+                dictionary.setPath(dictionaryFile.getPath());
+                dictionary.setId(dictionaryFileId);
+                dictionary.setType(DictionaryType.valueOf(folder.getName()));
+                dictionaryFileId++;
+            }
+        }
+        return paths;
     }
 
     @Bean
@@ -61,33 +70,56 @@ public class SpringConfig {
         ArrayList<DictionaryShell> result = new ArrayList<>();
         switch (managerType) {
             case "file" -> {
-                getAvailableDictionaryFiles();
+                return getAvailableDictionaryFiles();
             }
             case "DB" -> {
-                List<Dictionary> dictionaries = getAvailableDictionaryDB();
-                dictionaries.forEach(dictionary -> {
-                    DictionaryShell shell = new DictionaryShell();
-                    shell.setId(dictionary.getId());
-                    shell.setType(DictionaryType.valueOf(dictionary.getType()));
-                    shell.setName(dictionary.getName());
-                    result.add(shell);
-                });
+                return getAvailableDictionaryDB();
             }
         }
 
         return result;
     }
 
-    private List<Dictionary> getAvailableDictionaryDB() {
+    private DictionaryShell convertDictionariesToShells(Dictionary dictionary) {
+        DictionaryShell shell = new DictionaryShell();
+        shell.setType(DictionaryType.valueOf(dictionary.getType()));
+        shell.setId(dictionary.getId());
+        shell.setName(dictionary.getName());
+        return shell;
+    }
+
+    private ArrayList<DictionaryShell> getAvailableDictionaryDB() {
+        ArrayList<DictionaryShell> result = new ArrayList<>();
         Session session = HibernateSessionFactory.getSessionFactory().openSession();
         Query query = session.createQuery("FROM Dictionary ");
         List<Dictionary> dictionaries = query.getResultList();
+        dictionaries.forEach(dictionary -> {
+            result.add(convertDictionariesToShells(dictionary));
+        });
         session.close();
-        return dictionaries;
+        return result;
     }
 
-    private void getAvailableDictionaryFiles() {
-
+    private ArrayList<DictionaryShell> getAvailableDictionaryFiles() {
+        ArrayList<DictionaryShell> result = new ArrayList<>();
+        File mainFolder = new File(mainFolderPath);
+        File[] subfolders = mainFolder.listFiles(File::isDirectory);
+        int dictionaryFileId = 0;
+        assert subfolders != null;
+        for (File folder : subfolders) {
+            File[] dictionaryFiles = folder.listFiles(File::isFile);
+            assert dictionaryFiles != null;
+            for (File dictionaryFile : dictionaryFiles) {
+                DictionaryShell dictionary = new DictionaryShell();
+                dictionary.setName(dictionaryFile.getName());
+                dictionary.setPath(dictionaryFile.getPath());
+                dictionary.setId(dictionaryFileId);
+                dictionary.setType(DictionaryType.valueOf(folder.getName()));
+                result.add(dictionary);
+                dictionaryFileId++;
+            }
+        }
+        return result;
     }
 
     private List<DictionaryValidator> getValidatorsDB() {

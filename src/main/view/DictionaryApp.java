@@ -61,7 +61,7 @@ public class DictionaryApp implements IDictionaryApp {
     }
 
     String instructions = """
-            Для выбора словаря №1 нажмите 1          
+            Для выбора словаря нажмите 1          
             Для поиска слова нажмите 2
             Для добавления слова нажмите 3
             Для удаления слова нажмите 4
@@ -122,7 +122,7 @@ public class DictionaryApp implements IDictionaryApp {
     }
 
     public void printDictionary(String dictionaryName) {
-        System.out.println("ТЕКУЩИЙ СЛОВАРЬ №" + dictionaryName);
+        System.out.println("ТЕКУЩИЙ СЛОВАРЬ " + dictionaryName);
         String result = controller.getDictionary();
         System.out.println(result);
     }
